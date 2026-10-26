@@ -4,6 +4,23 @@
 
 In Admidio 5.0.17, a regular logged-in user can upload an image to the announcements module's image directory without having announcement editing or administration rights. The user sends `id=ann_description` to the CKEditor upload endpoint; the endpoint checks only that the user is logged in and does not verify permission to upload into the selected module. It stores the image under `adm_my_files/announcements/images` and returns a URL that serves the uploaded image.
 
+## Affected products
+
+- **Ecosystem:** Packagist
+- **Package name:** `admidio/admidio`
+- **Affected versions:** `5.0.17` (confirmed; other versions have not been verified)
+- **Patched versions:** No patched version confirmed; leave this field unset until a fix is released
+
+## Severity
+
+- **Suggested severity:** Low
+- **CVSS version:** 3.1
+- **Vector:** `CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:N/I:L/A:N`
+
+## Weaknesses
+
+- **CWE-862:** Missing Authorization
+
 ## Details
 
 `system/ckeditor_upload_handler.php:21-24` includes the common bootstrap, requires a valid login, and reads the caller-controlled `id` parameter. It does not check whether the current user may edit announcements or upload assets for that module.
@@ -265,25 +282,3 @@ After verification, remove the generated PNG from the application's `adm_my_file
 A regular authenticated user can place additional valid image files in the shared announcements image store and retrieve them through the application's image-serving endpoint. This bypasses the module-specific authorization applied to announcement editing and may allow unauthorized use of the application as an image host or allow unapproved assets to accumulate in a module-managed directory.
 
 The demonstrated impact is limited to image files accepted by the application's extension and image validation checks. No announcement content modification, overwrite of existing files, or code execution is demonstrated.
-
-## Affected products
-
-- **Ecosystem:** Packagist
-- **Package name:** `admidio/admidio`
-- **Affected versions:** `5.0.17` (confirmed; other versions have not been verified)
-- **Patched versions:** No patched version confirmed; leave this field unset until a fix is released
-
-## Severity
-
-- **Suggested severity:** Low
-- **CVSS version:** 3.1
-- **Vector:** `CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:N/I:L/A:N`
-
-## Weaknesses
-
-- **CWE-862:** Missing Authorization
-
-## AI assistance
-
-Yes. AI assistance was used to help analyze and write up this report. The reporter reproduced the behavior locally.
-
